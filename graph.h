@@ -6,7 +6,7 @@
 typedef struct {
     bool finished;
     int id;
-    int adj[1024];
+    int adj[10];
 } Vertex;
 
 typedef struct {

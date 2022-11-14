@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "dfs.h"
 
-#define MAX_NUM_VERTICES 100000
+#define MAX_NUM_VERTICES 320
 #define NUM_RUN_AVERAGE 3
 
 int main() {
