@@ -3,10 +3,13 @@
 
 #include <stdbool.h>
 
+#define ADJ_LIST_LEN 1024
+
 typedef struct {
     bool finished;
+    bool isRoot;
     int id;
-    int adj[10];
+    unsigned int adj[ADJ_LIST_LEN];
 } Vertex;
 
 typedef struct {
@@ -14,12 +17,22 @@ typedef struct {
     int size;
 } Graph;
 
-Graph genGraph(int size);
+typedef enum { DENSITY_25, DENSITY_50, DENSITY_75, DENSITY_100 } MaxDensity;
 
-bool edgeExist(Vertex fromVertex, Vertex toVertex);
+Graph genGraph(int size, MaxDensity density);
 
-bool verifyTopologicalSort(Graph sortedGraph);
+void translateIDToPosition(int id, int *block, int *offset);
 
-void addVertex(Graph *graph, Vertex newVertex);
+bool edgeExist(Vertex *fromVertex, Vertex *toVertex);
+
+bool hasNoIncomingEdge(Graph *graph, Vertex *toVertex);
+
+void removeEdge(Vertex *fromVertex, Vertex *toVertex);
+
+void addVertex(Graph *graph, Vertex *newVertex);
+
+void freeGraph(Graph *graph);
+
+bool verifyTopoSort(Graph *sortedGraph);
 
 #endif

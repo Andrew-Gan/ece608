@@ -3,8 +3,8 @@
 
 #include "graph.h"
 
-void _dfsRecurse(Graph graph, int offset, Graph *sortedGraph);
+void _dfsRecurse(Graph *graph, int offset, Graph *sortedGraph);
 
-double dfsTest(Graph graph);
+double dfsTest(Graph *graph);
 
 #endif

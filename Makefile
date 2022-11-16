@@ -1,8 +1,10 @@
 C_FLAGS=-g -Wall
 APP=topological
+SRC_FILES=$(wildcard *.c)
+OUT=$(wildcard stats_*)
 
 make:
-	gcc -g -Wall *.c -o $(APP)
+	gcc -g -Wall $(SRC_FILES) -o $(APP)
 
 run:
 	./$(APP)
@@ -11,4 +13,4 @@ valgrind:
 	valgrind ./$(APP)
 
 clean:
-	rm -f $(APP) stats.txt
+	rm -f $(APP) $(OUT)
