@@ -3,6 +3,8 @@
 #include <pthread.h>
 #include "graph.h"
 
+#include <stdio.h>
+
 #define NUM_THREAD 16
 
 unsigned int densityToNumBits[4] = {
@@ -18,7 +20,11 @@ void translateIDToPosition(int id, int *block, int *offset) {
 }
 
 unsigned int _randuint() {
-    return ((unsigned int)rand() << 1) | (rand() & 1);
+    unsigned int randVal = 0;
+    for(int i = 0; i < 3; i++) {
+        randVal |= ((unsigned int)rand() << 1) | (rand() & 1);
+    }
+    return randVal;
 }
 
 typedef struct {
@@ -62,10 +68,10 @@ void* _parallel_root_finder(void *args) {
     int start = myargs.index * myargs.workload;
     for(int v = start; v < start + myargs.workload; v++) {
         Vertex *vertex = &myargs.graph->vertices[v];
-        vertex->isRoot = true;
-        for(int u = 0; u < myargs.graph->size && vertex->isRoot == true; u++) {
+        vertex->numIncomingEdges = 0;
+        for(int u = 0; u < myargs.graph->size; u++) {
             if(edgeExist(&myargs.graph->vertices[u], vertex)) {
-                vertex->isRoot = false;
+                vertex->numIncomingEdges++;
             }
         }
     }
@@ -73,8 +79,8 @@ void* _parallel_root_finder(void *args) {
 }
 
 Graph genGraph(int size, MaxDensity density) {
-    Graph newGraph = { .size = size, .vertices = malloc(size * sizeof(Vertex)) };
-    int numThread = size / NUM_THREAD < 1 ? size : NUM_THREAD;
+    Graph newGraph = { .size = size, .capacity = size, .vertices = malloc(size * sizeof(Vertex)) };
+    int numThread = size < NUM_THREAD ? 1 : NUM_THREAD;
     int workload = size / numThread ;
 
     // randomly connect vertices
@@ -113,26 +119,28 @@ bool edgeExist(Vertex *fromVertex, Vertex *toVertex) {
     return (fromVertex->adj[adjIndex] >> adjOffset) & 1;
 }
 
-bool hasNoIncomingEdge(Graph *graph, Vertex *toVertex) {
-    for(int v = 0; v < graph->size; v++) {
-        if(edgeExist(&graph->vertices[v], toVertex)) {
-            return false;
-        }
-    }
-    return true;
-}
-
 void removeEdge(Vertex *fromVertex, Vertex *toVertex) {
+    if(toVertex->numIncomingEdges == 0) {
+        return;
+    }
     int adjIndex = 0, adjOffset = 0;
     translateIDToPosition(toVertex->id, &adjIndex, &adjOffset);
     fromVertex->adj[adjIndex] &= ~(1 << adjOffset);
+    toVertex->numIncomingEdges--;
 }
 
-void addVertex(Graph *graph, Vertex *newVertex) {
-    graph->vertices[graph->size].id = newVertex->id;
-    graph->vertices[graph->size].finished = newVertex->finished;
-    for(int i = 0; i < ADJ_LIST_LEN; i++) {
-        graph->vertices[graph->size].adj[i] = newVertex->adj[i];
+void addVertex(Graph *graph, Vertex *newVertex, bool insertBack) {
+    if(insertBack) {
+        graph->vertices[graph->capacity - graph->size - 1] = *newVertex;
+        for(int i = 0; i < ADJ_LIST_LEN; i++) {
+            graph->vertices[graph->capacity - graph->size - 1].adj[i] = newVertex->adj[i];
+        }
+    }
+    else {
+        graph->vertices[graph->size] = *newVertex;
+        for(int i = 0; i < ADJ_LIST_LEN; i++) {
+            graph->vertices[graph->size].adj[i] = newVertex->adj[i];
+        }
     }
     graph->size++;
 }
@@ -145,6 +153,7 @@ bool verifyTopoSort(Graph *sortedGraph) {
     for(int v = 0; v < sortedGraph->size; v++) {
         for(int u = 0; u < v; u++) {
             if(edgeExist(&sortedGraph->vertices[v], &sortedGraph->vertices[u])) {
+                printf("%d -> %d\n", v, u);
                 return false;
             }
         }

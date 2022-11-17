@@ -3,6 +3,6 @@
 
 #include "graph.h"
 
-double kahnTest(Graph *graph);
+float kahnTest(Graph *graph);
 
 #endif

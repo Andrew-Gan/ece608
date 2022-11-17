@@ -14,7 +14,7 @@ int main() {
         FILE *fp = fopen(filename, "w");
         for(int size = 2; size <= MAX_NUM_VERTICES; size *= 2) {
             printf("Testing graph size = %d\n", size);
-            double dfsRuntime = 0, kahnRuntime = 0;
+            float dfsRuntime = 0, kahnRuntime = 0;
             for(int numRun = 0; numRun < NUM_RUN_AVERAGE; numRun++) {
                 Graph graph = genGraph(size, d);
                 dfsRuntime += dfsTest(&graph);

@@ -5,6 +5,6 @@
 
 void _dfsRecurse(Graph *graph, int offset, Graph *sortedGraph);
 
-double dfsTest(Graph *graph);
+float dfsTest(Graph *graph);
 
 #endif

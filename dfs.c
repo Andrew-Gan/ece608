@@ -13,12 +13,13 @@ void _dfsRecurse(Graph *graph, int offset, Graph *sortedGraph) {
         }
     }
     graph->vertices[offset].finished = true;
-    addVertex(sortedGraph, &graph->vertices[offset]);
+    addVertex(sortedGraph, &graph->vertices[offset], true);
 }
 
-double dfsTest(Graph *graph) {
+float dfsTest(Graph *graph) {
     Graph sortedGraph = {
         .size = 0,
+        .capacity = graph->capacity,
         .vertices = malloc(graph->size * sizeof(Vertex))
     };
     time_t start = clock();
@@ -26,7 +27,7 @@ double dfsTest(Graph *graph) {
         _dfsRecurse(graph, v, &sortedGraph);
     }
     time_t end = clock();
-    // assert(verifyTopoSort(&sortedGraph));
+    assert(verifyTopoSort(&sortedGraph));
     freeGraph(&sortedGraph);
-    return (double)(end - start) / CLOCKS_PER_SEC;
+    return (float)(end - start) / CLOCKS_PER_SEC;
 }
