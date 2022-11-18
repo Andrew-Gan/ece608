@@ -15,7 +15,7 @@ void _getRootVertices(Graph *graph, unsigned int *rootVertexSet) {
 }
 
 int _popRootVertex(Graph *graph, unsigned int *rootVertexSet) {
-    for(int v = 0; v < graph->size; v++) {
+    for(int v = graph->size - 1; v >= 0; v--) {
         Vertex *currVertex = &graph->vertices[v];
         int block = 0, offset = 0;
         translateIDToPosition(currVertex->id, &block, &offset);

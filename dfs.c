@@ -23,7 +23,7 @@ float dfsTest(Graph *graph) {
         .vertices = malloc(graph->size * sizeof(Vertex))
     };
     time_t start = clock();
-    for(int v = 0; v < graph->size; v++) {
+    for(int v = graph->size - 1; v >= 0; v--) {
         _dfsRecurse(graph, v, &sortedGraph);
     }
     time_t end = clock();

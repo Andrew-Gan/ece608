@@ -13,4 +13,4 @@ valgrind:
 	valgrind ./$(APP)
 
 clean:
-	rm -f $(APP) $(OUT)
+	rm -f $(APP)

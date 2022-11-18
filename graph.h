@@ -18,20 +18,15 @@ typedef struct {
     int capacity;
 } Graph;
 
-typedef enum { DENSITY_25, DENSITY_50, DENSITY_75, DENSITY_100 } MaxDensity;
+typedef enum { DENSITY_25, DENSITY_50, DENSITY_75 } MaxDensity;
 
 Graph genGraph(int size, MaxDensity density);
-
+Graph genDepthGraph(int size, int depth);
 void translateIDToPosition(int id, int *block, int *offset);
-
 bool edgeExist(Vertex *fromVertex, Vertex *toVertex);
-
 void removeEdge(Vertex *fromVertex, Vertex *toVertex);
-
 void addVertex(Graph *graph, Vertex *newVertex, bool insertBack);
-
 void freeGraph(Graph *graph);
-
 bool verifyTopoSort(Graph *sortedGraph);
 
 #endif

@@ -113,6 +113,34 @@ Graph genGraph(int size, MaxDensity density) {
     return newGraph;
 }
 
+Graph genDepthGraph(int size, int depth) {
+    Graph newGraph = { .size = size, .capacity = size, .vertices = malloc(size * sizeof(Vertex)) };
+
+    for(int v =  0; v < newGraph.size; v++) {
+        newGraph.vertices[v].id = v;
+        newGraph.vertices[v].finished = false;
+        newGraph.vertices[v].numIncomingEdges = 0;
+        for(int i = 0; i < ADJ_LIST_LEN; i++) {
+            newGraph.vertices[v].adj[i] = 0;
+        }
+    }
+
+    for(int v = 0; v < size; v += depth) {
+        for(int d = 1; d < depth; d++) {
+            int id = v * depth + d;
+            if(id >= newGraph.size) {
+                break;
+            }
+            int block = 0, offset = 0;
+            translateIDToPosition(id, &block, &offset);
+            newGraph.vertices[id - 1].adj[block] |= 1 << offset;
+            newGraph.vertices[id - 1].numIncomingEdges++;
+        }
+    }
+
+    return newGraph;
+}
+
 bool edgeExist(Vertex *fromVertex, Vertex *toVertex) {
     int adjIndex = 0, adjOffset = 0;
     translateIDToPosition(toVertex->id, &adjIndex, &adjOffset);

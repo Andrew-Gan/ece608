@@ -2,6 +2,11 @@
     "files.associations": {
         "stdlib.h": "c",
         "dfs.h": "c",
-        "graph.h": "c"
+        "graph.h": "c",
+        "array": "c",
+        "string_view": "c",
+        "initializer_list": "c",
+        "utility": "c",
+        "chrono": "c"
     }
 }
